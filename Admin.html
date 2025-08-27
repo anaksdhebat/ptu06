@@ -878,10 +878,11 @@
             fetch(`${scriptURL}?action=getIbadahDropdowns`)
                 .then(response => response.json())
                 .then(res => {
-                    if (res.status === 'success') {
+                    if (res.status === 'success' && res.data.options) {
                         for (let i = 1; i <= 7; i++) {
                             const textarea = document.getElementById(`opsiIbadah${i}`);
-                            const options = res.data[`ibadah${i}`] || [];
+                            // PERBAIKAN: Tambahkan .options untuk mengakses object yang benar
+                            const options = res.data.options[`ibadah${i}`] || []; // <-- DIUBAH
                             textarea.value = options.join('\n');
                         }
                     } else {
@@ -1739,3 +1740,4 @@
 </body>
 
 </html>
+
