@@ -138,6 +138,8 @@
                             <input type="checkbox" id="makananKarbo" value="Karbo"><label for="makananKarbo">Karbo</label>
                             <input type="checkbox" id="makananSayur" value="Sayur/Buah"><label for="makananSayur">Sayur/Buah</label>
                             <input type="checkbox" id="makananSusu" value="Susu"><label for="makananSusu">Susu</label>
+                            <input type="checkbox" id="makananLauk" value="Protein"><label for="makananLauk">Lauk Pauk</label>
+                            <input type="checkbox" id="makananAir" value="Air Putih"><label for="makananAir">Air Putih</label>							
                         </div>
                     </div>
                     <div class="form-group full-width">
@@ -287,11 +289,13 @@
                 document.getElementById('tidurCepat').value,
                 document.getElementById('olahraga').value,
                 document.getElementById('belajarTempat').value, 
-                document.getElementById('belajarApa').value, 
+                document.getElementById('belajarApa').value,
+                document.getElementById('bermasyarakat').value,				
                 document.getElementById('makananKarbo').checked ? 'Karbo' : '',
                 document.getElementById('makananSayur').checked ? 'SB' : '',
-                document.getElementById('makananSusu').checked ? 'Protein' : '',
-                document.getElementById('bermasyarakat').value
+                document.getElementById('makananSusu').checked ? 'Susu' : '',
+				document.getElementById('makananLauk').checked ? 'Protein' : '',
+				document.getElementById('makananAir').checked ? 'Air Putih' : ''
             ];
             
             const payload = {
