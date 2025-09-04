@@ -3,382 +3,468 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
-    <title>Halaman Siswa</title>
+    <link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <title>Dashboard Siswa</title>
 <style>
-    /* Menggunakan CSS Variables untuk warna agar mudah diubah */
     :root {
-        --primary-color: #007bff;
-        --primary-hover: #0056b3;
-        --secondary-color: #28a745;
-        --background-color: #f4f7f6;
-        --card-bg-color: #ffffff;
-        --text-color: #333;
-        --border-color: #ccc;
-        --shadow-color: rgba(0, 0, 0, 0.1);
+        --primary-color: #9d34da;
+        --secondary-color: #16e0b4;
+        --accent-color: #f9008e;
+        --text-color: #e0e0e0;
+        --text-muted: #8b949e;
+        --bg-color: #0d1117;
+        --card-bg: #161b22;
+        --border-color: #30363d;
+        --font-family: 'Inter', sans-serif;
     }
 
-    /* Definisi animasi untuk fade-in dan slide-up */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    /* === ANIMASI & KEYFRAMES === */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes backgroundPan {
+        0%{background-position:0% 50%}
+        50%{background-position:100% 50%}
+        100%{background-position:0% 50%}
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* === LATAR BELAKANG & PRELOADER === */
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: var(--background-color);
+        font-family: var(--font-family);
+        background-color: var(--bg-color);
         color: var(--text-color);
         margin: 0;
-        padding: 0;
+        overflow-x: hidden;
+    }
+    .background-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(157, 52, 218, 0.1), rgba(13, 17, 23, 0), rgba(249, 0, 142, 0.1));
+        background-size: 400% 400%;
+        animation: backgroundPan 15s ease infinite;
+        z-index: -1;
+    }
+    #preloader {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-color);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+    }
+    #preloader.hidden { opacity: 0; pointer-events: none; }
+    .spinner {
+        width: 50px; height: 50px;
+        border: 4px solid var(--border-color);
+        border-top-color: var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
     }
 
-    .header {
-        background-color: var(--secondary-color);
-        color: white;
-        padding: 20px;
+    /* === HEADER UTAMA === */
+    .page-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 2px 4px var(--shadow-color);
-    }
-
-    .header h1 { margin: 0; font-size: 24px; }
-    .header a {
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        background-color: rgba(255, 255, 255, 0.2);
-        border-radius: 5px;
-        transition: all 0.3s ease;
-    }
-
-    .header a:hover {
-        background-color: rgba(255, 255, 255, 0.4);
-        transform: translateY(-2px); /* Efek terangkat saat hover */
-    }
-
-    .container {
-        padding: 20px;
-        max-width: 800px;
-        margin: auto;
-    }
-    
-    /* Animasi untuk semua kartu konten */
-    .welcome-card, .profile-container, .activity-form-container {
-        background-color: var(--card-bg-color);
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px var(--shadow-color);
-        margin-bottom: 25px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        animation: fadeInUp 0.6s ease-out forwards; /* Terapkan animasi saat muncul */
-    }
-    
-    /* Efek terangkat saat kursor di atas kartu */
-    .welcome-card:hover, .profile-container:hover, .activity-form-container:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    .welcome-card h2 { margin-top: 0; color: var(--primary-hover); }
-
-    .profile-container h3, .activity-form-container h3 {
-        border-bottom: 2px solid var(--secondary-color);
-        padding-bottom: 10px;
-        margin-top: 0;
-        color: var(--primary-hover);
-    }
-
-    .info-item { display: flex; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 16px; }
-    .info-label { font-weight: bold; color: #555; width: 150px; flex-shrink: 0; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .form-group { margin-bottom: 15px; }
-    .form-group.full-width { grid-column: 1 / -1; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: bold; }
-
-    /* Desain ulang input form dengan transisi */
-    .form-group input[type="text"], .form-group input[type="time"], .form-group input[type="date"], .form-group select, .form-group textarea {
-        width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-        border: 2px solid var(--border-color);
-        border-radius: 8px;
-        background-color: #fdfdfd;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    /* Efek "Glow" saat input aktif/fokus */
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-    }
-    
-    .form-group textarea { resize: vertical; min-height: 80px; }
-
-    /* === DESAIN ULANG CHECKBOX MENJADI LEBIH MENARIK === */
-    .checkbox-group {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px; /* Jarak antar item */
-    }
-
-    .checkbox-group input[type="checkbox"] {
-        display: none; /* Sembunyikan checkbox asli */
-    }
-
-    .checkbox-group label {
-        padding: 8px 15px;
-        border: 2px solid var(--border-color);
-        border-radius: 20px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-    }
-    
-    /* Style untuk label saat checkbox di-checklist */
-    .checkbox-group input[type="checkbox"]:checked + label {
-        background-color: var(--secondary-color);
-        color: white;
-        border-color: var(--secondary-color);
-    }
-
-    /* Efek hover pada label checkbox */
-    .checkbox-group label:hover {
-        border-color: var(--secondary-color);
-        background-color: #e9f7eb;
-    }
-
-    /* === EFEK TOMBOL 3D dan INTERAKTIF === */
-    .submit-button {
-        background-color: var(--primary-color);
-        color: white;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .submit-button:hover {
-        background-color: var(--primary-hover);
-        transform: translateY(-3px); /* Tombol terangkat */
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Efek saat tombol ditekan */
-    .submit-button:active {
-        transform: translateY(1px);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .submit-button:disabled {
-        background-color: #a0c7e4;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
-    
-    /* === ANIMASI MODAL/POPUP === */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
+        padding: 20px 40px;
+        background: rgba(22, 27, 34, 0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        position: sticky;
         top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        animation: fadeIn 0.3s ease; /* Animasi fade-in untuk background gelap */
+        z-index: 100;
     }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 25px;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 400px;
-        text-align: center;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.25);
-        animation: fadeInUp 0.4s ease-out; /* Animasi slide-up untuk konten modal */
+    .page-header h1 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0;
     }
-
-    .modal-content .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        transition: color 0.2s;
-    }
-
-    .modal-content .close:hover, .modal-content .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    #messageModalButtons { margin-top: 20px; }
-    #messageModalButtons button {
+    #logoutButton {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         padding: 10px 20px;
+        background: transparent;
+        border: 1px solid var(--border-color);
         border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        background-color: var(--primary-color);
-        color: white;
-        transition: background-color 0.3s;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
     }
-    #messageModalButtons button:hover {
-        background-color: var(--primary-hover);
+    #logoutButton:hover {
+        background: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
     }
     
-    .ibadah-form-group {
-        display: none;
+    /* === CONTAINER UTAMA (SINGLE COLUMN) === */
+    .container {
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 30px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    .container.loaded {
+        opacity: 1;
     }
 
-    @media (max-width: 600px) {
+    /* === KARTU PROFIL & FORM === */
+    .card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid var(--border-color);
+        margin-bottom: 25px;
+        animation: fadeInUp 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .card:hover {
+        border-color: rgba(157, 52, 218, 0.5);
+        box-shadow: 0 0 30px rgba(157, 52, 218, 0.1);
+    }
+    .profile-header { animation-delay: 0.2s; }
+    .form-container { animation-delay: 0.4s; }
+
+    .welcome-card h2 {
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1.3;
+        margin: 0 0 10px 0;
+    }
+    #nama-siswa-display {
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .welcome-card p {
+        color: var(--text-muted);
+        font-size: 16px;
+        margin: 0 0 25px 0;
+    }
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px; /* Jarak diperkecil */
+    }
+    .info-item {
+        background: #0d1117;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+    }
+    .info-label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+    .info-value { font-weight: 600; font-size: 15px; }
+    
+    /* === FORM MODERN === */
+    .form-container h3 {
+        font-size: 22px; font-weight: 700; margin: 0 0 25px 0; display: flex; align-items: center; gap: 12px;
+    }
+    /* Jarak grid diperkecil */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group.full-width { grid-column: 1 / -1; }
+
+    .form-group { position: relative; }
+    /* PERUBAHAN DI SINI: Selector dibuat lebih spesifik */
+    .form-group > label {
+        position: absolute; top: 15px; left: 15px;
+        color: var(--text-muted); pointer-events: none;
+        transition: all 0.3s ease;
+        padding: 0 5px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%; padding: 15px; box-sizing: border-box;
+        border: 1px solid var(--border-color); border-radius: 8px;
+        background: #0d1117; color: var(--text-color);
+        font-size: 14px; transition: all 0.3s ease;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        outline: none; border-color: var(--primary-color);
+        box-shadow: 0 0 10px rgba(157, 52, 218, 0.5);
+    }
+    .form-group input:focus + label, .form-group input:not(:placeholder-shown) + label,
+    .form-group textarea:focus + label, .form-group textarea:not(:placeholder-shown) + label,
+    .form-group select:not([value=""]) + label {
+        top: -10px; left: 10px; font-size: 12px; color: var(--primary-color);
+        background: var(--card-bg);
+    }
+    .form-group input[type="date"] + label, .form-group input[type="time"] + label {
+        top: -10px; left: 10px; font-size: 12px;
+        color: var(--text-muted); background: var(--card-bg);
+    }
+    .form-group input[type="date"]:focus + label, .form-group input[type="time"]:focus + label {
+        color: var(--primary-color);
+    }
+
+    .checkbox-group { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px; 
+    }
+
+    .checkbox-group input { display: none; }
+
+    .checkbox-group .food-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 10px; 
+        border: 2px solid var(--border-color);
+        border-radius: 12px; 
+        cursor: pointer; 
+        transition: all 0.3s ease;
+        background: #2e3440;
+        text-align: center;
+        min-height: 50px;
+    }
+
+    .checkbox-group .food-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-color);
+    }
+
+    .checkbox-group .food-card i {
+        margin-bottom: 12px;
+        color: var(--text-muted);
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-group .food-card span {
+        font-weight: 500; 
+        font-size: 14px;
+        color: var(--text-muted);
+        transition: all 0.3s ease;
+    }
+
+    /* State ketika dipilih */
+    .checkbox-group input:checked + .food-card {
+        background: var(--card-bg); 
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 20px rgba(22, 224, 180, 0.3);
+        transform: translateY(-5px) scale(1.03);
+    }
+
+    .checkbox-group input:checked + .food-card i {
+        color: var(--secondary-color);
+        transform: scale(1.1);
+    }
+
+    .checkbox-group input:checked + .food-card span {
+        color: var(--text-color);
+        font-weight: 600;
+    }
+    
+    /* [BARU] TOMBOL FULL-WIDTH */
+    .form-actions {
+        grid-column: 1 / -1;
+        margin-top: 15px;
+    }
+    .submit-button {
+        width: 100%;
+        background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+        color: white; padding: 16px 30px; border: none; border-radius: 8px;
+        font-size: 16px; font-weight: 600; letter-spacing: 0.5px;
+        cursor: pointer; transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(249, 0, 142, 0.3);
+    }
+    .submit-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 25px rgba(249, 0, 142, 0.4);
+    }
+    .submit-button:disabled {
+        background: #555; cursor: not-allowed; box-shadow: none; transform: none;
+    }
+    
+    .modal {
+        display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+        background-color: rgba(13, 17, 23, 0.7); backdrop-filter: blur(5px);
+        animation: fadeIn 0.3s;
+    }
+    .modal-content {
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--card-bg);
+        padding: 30px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        animation: fadeInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal-content .close {
+        position: absolute; top: 15px; right: 15px; color: var(--text-muted);
+        font-size: 28px; font-weight: bold; transition: all 0.2s;
+    }
+    .modal-content .close:hover { color: white; transform: rotate(90deg); cursor: pointer; }
+    
+    .ibadah-form-group { display: none; }
+
+    @media (max-width: 768px) {
+        .page-header { padding: 15px 20px; }
+        .container { padding: 20px 15px; }
         .form-grid { grid-template-columns: 1fr; }
-        .welcome-card, .profile-container, .activity-form-container { padding: 20px; }
     }
 </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Halaman Siswa</h1>
-        <a href="#" id="logoutButton">Logout</a>
-    </div>
+    <div class="background-overlay"></div>
+    <div id="preloader"><div class="spinner"></div></div>
+    
+    <header class="page-header">
+        <h1>Laporan Harian Siswa</h1>
+        <a href="#" id="logoutButton">
+            Logout<i data-feather="log-out" width="18" height="18"></i>
+        </a>
+    </header>
 
     <div class="container">
-        <div class="welcome-card">
-            <h2>Selamat Datang, <span id="nama-siswa-display">Memuat...</span>!</h2>
-            <p>Silakan isi laporan kegiatan harian Anda pada formulir di bawah ini.</p>
+        <div class="profile-header card">
+            <div class="welcome-card">
+                <h2>Selamat Datang, <span id="nama-siswa-display">Memuat...</span></h2>
+                <p>Lengkapi laporan harianmu untuk mencatat perkembanganmu.</p>
+            </div>
+            <div id="studentInfoContainer" class="info-grid">
+                 <div class="info-item"><span class="info-label">Nama</span> <span class="info-value">Memuat...</span></div>
+                 <div class="info-item"><span class="info-label">No. Induk</span> <span class="info-value">Memuat...</span></div>
+                 <div class="info-item"><span class="info-label">Kelas</span> <span class="info-value">Memuat...</span></div>
+                 <div class="info-item"><span class="info-label">Agama</span> <span class="info-value">Memuat...</span></div>
+            </div>
         </div>
-        <div class="profile-container">
-            <h3>Data Diri Siswa</h3>
-            <div id="studentInfoContainer"><p>Memuat data...</p></div>
-        </div>
-        <div class="activity-form-container">
-            <h3>Laporan Kegiatan Harian</h3>
+
+        <div class="form-container card">
+            <h3><i data-feather="edit-3"></i>Formulir Laporan</h3>
             <form id="activityForm">
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label for="tanggalKegiatan">Tanggal Kegiatan</label>
+                    <div class="form-group full-width">
                         <input type="date" id="tanggalKegiatan" required>
+                        <label for="tanggalKegiatan">Tanggal Kegiatan</label>
                     </div>
-                    <div></div>
 
                     <div class="form-group full-width">
-                        <label>Laporan Ibadah Harian</label>
-                        <div class="form-grid">
+                         <label style="position: static; margin-bottom: 15px; font-size: 14px; color: var(--text-muted);">Laporan Ibadah Harian</label>
+                        <div class="form-grid" style="gap: 15px;">
                             <div class="form-group ibadah-form-group" id="ibadah-container-1">
-                                <select id="ibadah1">
-                                    <option value="" disabled selected>Ibadah 1</option>
-                                </select>
+                                <select id="ibadah1" value=""><option value="" disabled selected></option></select>
+                                <label for="ibadah1">Ibadah 1</label>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-2">
-                                <select id="ibadah2">
-                                    <option value="" disabled selected>Ibadah 2</option>
-                                </select>
+                                <select id="ibadah2" value=""><option value="" disabled selected></option></select>
+                                <label for="ibadah2">Ibadah 2</label>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-3">
-                                <select id="ibadah3">
-                                    <option value="" disabled selected>Ibadah 3</option>
-                                </select>
+                                <select id="ibadah3" value=""><option value="" disabled selected></option></select>
+                                <label for="ibadah3">Ibadah 3</label>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-4">
-                                <select id="ibadah4">
-                                    <option value="" disabled selected>Ibadah 4</option>
-                                </select>
+                                <select id="ibadah4" value=""><option value="" disabled selected></option></select>
+                                <label for="ibadah4">Ibadah 4</label>
                             </div>
-                             <div class="form-group ibadah-form-group" id="ibadah-container-5">
-                                <select id="ibadah5">
-                                    <option value="" disabled selected>Ibadah 5</option>
-                                </select>
+                            <div class="form-group ibadah-form-group" id="ibadah-container-5">
+                                <select id="ibadah5" value=""><option value="" disabled selected></option></select>
+                                <label for="ibadah5">Ibadah 5</label>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-6">
-                                <select id="ibadah6">
-                                    <option value="" disabled selected>Ibadah 6</option>
-                                </select>
+                                <select id="ibadah6" value=""><option value="" disabled selected></option></select>
+                                <label for="ibadah6">Ibadah 6</label>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-7">
-                                <select id="ibadah7">
-                                    <option value="" disabled selected>Ibadah 7</option>
-                                </select>
+                                <select id="ibadah7" value=""><option value="" disabled selected></option></select>
+                                <label for="ibadah7">Ibadah 7</label>
                             </div>
                         </div>
                     </div>
-
+                    
                     <div class="form-group">
-                        <label for="bangunPagi">Jam Bangun Pagi</label>
                         <input type="time" id="bangunPagi" required>
+                        <label for="bangunPagi">Jam Bangun Pagi</label>
                     </div>
                     <div class="form-group">
-                        <label for="tidurCepat">Jam Tidur Cepat</label>
                         <input type="time" id="tidurCepat" required>
-                    </div>
-                     <div class="form-group">
-                        <label for="olahraga">Kegiatan Olahraga</label>
-                        <input type="text" id="olahraga" placeholder="Contoh: Lari pagi 15 menit">
-                    </div>
-                    <div class="form-group">
-                        <label for="bermasyarakat">Kegiatan Bermasyarakat</label>
-                        <textarea id="bermasyarakat" placeholder="Contoh: Membantu ibu membersihkan rumah"></textarea>
+                        <label for="tidurCepat">Jam Tidur Cepat</label>
                     </div>
                      <div class="form-group full-width">
+                        <input type="text" id="olahraga" placeholder=" ">
+                        <label for="olahraga">Kegiatan Olahraga</label>
+                    </div>
+                    <div class="form-group full-width">
+                        <input type="text" id="bermasyarakat" placeholder=" ">
+                        <label for="bermasyarakat">Kegiatan Bermasyarakat</label>
+                    </div>
+                     <div class="form-group full-width">
+                        <input type="text" id="belajarTempat" placeholder=" ">
                         <label for="belajarTempat">Tempat Belajar</label>
-                        <input type="text" id="belajarTempat" placeholder="Contoh: Di rumah, di perpustakaan">
                     </div>
                     <div class="form-group full-width">
+                        <textarea id="belajarApa" placeholder=" " rows="3"></textarea>
                         <label for="belajarApa">Materi yang Dipelajari</label>
-                        <textarea id="belajarApa" placeholder="Contoh: Membaca buku Sejarah Bab 3"></textarea>
                     </div>
                     <div class="form-group full-width">
-                        <label>Makanan Sehat</label>
+                        <label style="position: static; font-weight:500; color: var(--text-muted); font-size: 14px; margin-bottom: 15px; display: block;">Laporan Makanan Sehat</label>
                         <div class="checkbox-group">
-                            <input type="checkbox" id="makananKarbo" value="Karbo"><label for="makananKarbo">Karbo</label>
-                            <input type="checkbox" id="makananSayur" value="Sayur/Buah"><label for="makananSayur">Sayur/Buah</label>
-                            <input type="checkbox" id="makananSusu" value="Susu"><label for="makananSusu">Susu</label>
-                            <input type="checkbox" id="makananLauk" value="Protein"><label for="makananLauk">Lauk Pauk</label>
-                            <input type="checkbox" id="makananAir" value="Air Putih"><label for="makananAir">Air Putih</label>							
+                            <!-- Karbo -->
+                            <input type="checkbox" id="makananKarbo" value="Karbo">
+                            <label for="makananKarbo" class="food-card">
+                                <i data-feather="coffee" width="32" height="32"></i>
+                                <span>Karbo</span>
+                            </label>
+                            
+                            <!-- Sayur/Buah -->
+                            <input type="checkbox" id="makananSayur" value="Sayur/Buah">
+                            <label for="makananSayur" class="food-card">
+                                <i data-feather="leaf" width="32" height="32"></i>
+                                <span>Sayur/Buah</span>
+                            </label>
+                        
+                            <!-- Susu -->
+                            <input type="checkbox" id="makananSusu" value="Susu">
+                            <label for="makananSusu" class="food-card">
+                                <i data-feather="package" width="32" height="32"></i>
+                                <span>Susu</span>
+                            </label>
+                            
+                            <!-- Lauk Pauk -->
+                            <input type="checkbox" id="makananLauk" value="Protein">
+                            <label for="makananLauk" class="food-card">
+                                <i data-feather="grid" width="32" height="32"></i>
+                                <span>Lauk Pauk</span>
+                            </label>
+                        
+                            <!-- Air Putih -->
+                            <input type="checkbox" id="makananAir" value="Air Putih">
+                            <label for="makananAir" class="food-card">
+                                <i data-feather="droplet" width="32" height="32"></i>
+                                <span>Air Putih</span>
+                            </label>                            
                         </div>
                     </div>
-
-
+                    <div class="form-actions full-width">
+                        <button type="submit" id="submitActivity" class="submit-button">Kirim Laporan</button>
+                    </div>
                 </div>
-                <button type="submit" id="submitActivity" class="submit-button">Simpan Laporan</button>
             </form>
         </div>
     </div>
 
     <div id="messageModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3 id="messageModalTitle">Pemberitahuan</h3>
-            <p id="messageModalText"></p>
-            <div id="messageModalButtons">
-                 <button onclick="closeModal()">OK</button>
+            <span class="close" onclick="closeModal()">×</span>
+            <h3 id="messageModalTitle"></h3>
+            <p id="messageModalText" style="color: var(--text-muted);"></p>
+            <div id="messageModalButtons" style="margin-top: 20px;">
+                 <button onclick="closeModal()" class="submit-button" style="margin: 0; float: none; width: auto; padding: 12px 30px;">OK</button>
             </div>
         </div>
     </div>
 
     <script>
+        feather.replace(); // Untuk render ikon
+
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyyk8QZc5a7sFhSlll7mKXeUv0cl6sYZ3vs6YpJsoqOpbGUlzw5vGF-9OQNUe6ofaA/exec';
         let currentStudentData = {};
         const messageModal = document.getElementById('messageModal');
@@ -400,10 +486,18 @@
         }
         
         window.onclick = event => {
-            if (event.target == messageModal) {
-                closeModal();
-            }
+            if (event.target == messageModal) closeModal();
         }
+        
+        document.querySelectorAll('.form-group select').forEach(select => {
+            select.addEventListener('change', function() {
+                if (this.value === "") {
+                    this.setAttribute('value', '');
+                } else {
+                    this.removeAttribute('value');
+                }
+            });
+        });
 
         function loadIbadahDropdownOptions() {
             fetch(`${scriptURL}?action=getIbadahDropdowns`)
@@ -445,6 +539,9 @@
             }
 
             loadIbadahDropdownOptions();
+            
+            const preloader = document.getElementById('preloader');
+            const container = document.querySelector('.container');
 
             fetch(`${scriptURL}?action=getSiswaDataByInduk&induk=${nomorInduk}`)
                 .then(response => response.json())
@@ -452,12 +549,12 @@
                     if (res.status === 'success') {
                         currentStudentData = res.data;
                         document.getElementById('nama-siswa-display').textContent = currentStudentData.nama;
-                        const container = document.getElementById('studentInfoContainer');
-                        container.innerHTML = `
-                            <div class="info-item"><div class="info-label">Nama Lengkap</div>: ${currentStudentData.nama}</div>
-                            <div class="info-item"><div class="info-label">Nomor Induk</div>: ${currentStudentData.induk}</div>
-                            <div class="info-item"><div class="info-label">Kelas</div>: ${currentStudentData.kelas}</div>
-                            <div class="info-item"><div class="info-label">Agama</div>: ${currentStudentData.agama}</div>
+                        const infoContainer = document.getElementById('studentInfoContainer');
+                        infoContainer.innerHTML = `
+                            <div class="info-item"><span class="info-label">Nama</span> <span class="info-value">${currentStudentData.nama}</span></div>
+                            <div class="info-item"><span class="info-label">No. Induk</span> <span class="info-value">${currentStudentData.induk}</span></div>
+                            <div class="info-item"><span class="info-label">Kelas</span> <span class="info-value">${currentStudentData.kelas}</span></div>
+                            <div class="info-item"><span class="info-label">Agama</span> <span class="info-value">${currentStudentData.agama}</span></div>
                         `;
                     } else {
                          showMessage('Gagal memuat data siswa: ' + res.message, 'Error');
@@ -466,6 +563,10 @@
                 .catch(error => {
                     console.error('Error loading student info:', error);
                     showMessage('Terjadi kesalahan saat menghubungi server.', 'Error');
+                })
+                .finally(() => {
+                    preloader.classList.add('hidden');
+                    container.classList.add('loaded');
                 });
         };
 
@@ -497,12 +598,12 @@
                 document.getElementById('olahraga').value,
                 document.getElementById('belajarTempat').value, 
                 document.getElementById('belajarApa').value,
-                document.getElementById('bermasyarakat').value,				
+                document.getElementById('bermasyarakat').value,                
                 document.getElementById('makananKarbo').checked ? 'Karbo' : '',
                 document.getElementById('makananSayur').checked ? 'SB' : '',
                 document.getElementById('makananSusu').checked ? 'Susu' : '',
-				document.getElementById('makananLauk').checked ? 'Protein' : '',
-				document.getElementById('makananAir').checked ? 'Air Putih' : ''
+                document.getElementById('makananLauk').checked ? 'Protein' : '',
+                document.getElementById('makananAir').checked ? 'Air Putih' : ''
             ];
             
             const payload = {
@@ -518,6 +619,9 @@
                     if(result.status === 'success') {
                         showMessage('Laporan harian berhasil disimpan!', 'Sukses', () => {
                             document.getElementById('activityForm').reset();
+                            document.querySelectorAll('.form-group select').forEach(select => {
+                                select.setAttribute('value', '');
+                            });
                         });
                     } else {
                         showMessage('Gagal menyimpan laporan. Error: ' + result.message, 'Gagal');
@@ -529,10 +633,10 @@
                 })
                 .finally(() => {
                     submitButton.disabled = false;
-                    submitButton.textContent = 'Simpan Laporan';
+                    submitButton.textContent = 'Kirim Laporan';
                 });
         });
     </script>
 </body>
-
 </html>
+
