@@ -671,7 +671,7 @@
                     <thead>
                         <tr>
                             <th>Kelas</th><th>Beribadah</th><th>Tidur Cepat</th><th>Bangun Pagi</th>
-                            <th>Olah Raga</th><th>Belajar</th><th>Makan Bergizi</th><th>Bermasyarakat</th>
+                            <th>Olah Raga</th><th>Belajar</th><th>Bermasyarakat</th><th>Makan Bergizi</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -1397,8 +1397,9 @@
                         row.insertCell().textContent = calculatePredicate(percentages.bangunPagi);
                         row.insertCell().textContent = calculatePredicate(percentages.olahraga);
                         row.insertCell().textContent = calculatePredicate(percentages.belajar);
-                        row.insertCell().textContent = calculatePredicate(percentages.makanBergizi);
                         row.insertCell().textContent = calculatePredicate(percentages.bermasyarakat);
+                        row.insertCell().textContent = calculatePredicate(percentages.makanBergizi);
+
                     }
                     
                     renderSchoolRekap(rawRekapData);
@@ -1421,7 +1422,7 @@
 
             const averages = {
                 beribadah: 0, tidurCepat: 0, bangunPagi: 0,
-                olahraga: 0, belajar: 0, makanBergizi: 0, bermasyarakat: 0
+                olahraga: 0, belajar: 0, bermasyarakat: 0, makanBergizi: 0
             };
             const keys = Object.keys(averages);
             
@@ -1445,7 +1446,7 @@
             `;
             container.appendChild(card);
             
-            const categories = ["Beribadah", "Tidur Cepat", "Bangun Pagi", "Olah Raga", "Belajar", "Makan Bergizi", "Bermasyarakat"];
+            const categories = ["Beribadah", "Tidur Cepat", "Bangun Pagi", "Olah Raga", "Belajar", "Bermasyarakat", "Makan Bergizi"];
             const averageData = keys.map(key => averages[key].toFixed(1));
 
             const ctx = document.getElementById(canvasId).getContext('2d');
@@ -1497,8 +1498,8 @@
                 return; 
             }
 
-            const categories = ["Beribadah", "Tidur Cepat", "Bangun Pagi", "Olah Raga", "Belajar", "Makan Bergizi", "Bermasyarakat"];
-            const dataKeys = ["beribadah", "tidurCepat", "bangunPagi", "olahraga", "belajar", "makanBergizi", "bermasyarakat"];
+            const categories = ["Beribadah", "Tidur Cepat", "Bangun Pagi", "Olah Raga", "Belajar", "Bermasyarakat", "Makan Bergizi"];
+            const dataKeys = ["beribadah", "tidurCepat", "bangunPagi", "olahraga", "belajar", "bermasyarakat", "makanBergizi"];
             
             for (const className in rekapData) {
                 const card = document.createElement('div');
@@ -1740,4 +1741,3 @@
 </body>
 
 </html>
-
