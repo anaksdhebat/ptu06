@@ -265,7 +265,7 @@
             }
             
             if (viewType === 'predikat') {
-                const rekapHeaders = ["Nama Siswa", "Beribadah", "Tidur Cepat", "Bangun Pagi", "Olahraga", "Belajar", "Makan Bergizi", "Bermasyarakat", "Aksi"];
+                const rekapHeaders = ["Nama Siswa", "Beribadah", "Tidur Cepat", "Bangun Pagi", "Olahraga", "Belajar", "Bermasyarakat", "Makan Bergizi", "Aksi"];
                 const headerRow = document.createElement('tr');
                 rekapHeaders.forEach(text => headerRow.appendChild(document.createElement('th')).textContent = text);
                 tableHead.appendChild(headerRow);
@@ -275,7 +275,7 @@
                     const rowData = fullData[i];
                     const namaSiswa = rowData[1];
                     if (!rekapData[namaSiswa]) {
-                        rekapData[namaSiswa] = { totalHari: 0, beribadah: 0, tidurCepat: 0, bangunPagi: 0, olahraga: 0, belajar: 0, makanBergizi: 0, bermasyarakat: 0 };
+                        rekapData[namaSiswa] = { totalHari: 0, beribadah: 0, tidurCepat: 0, bangunPagi: 0, olahraga: 0, belajar: 0, bermasyarakat: 0, makanBergizi: 0 };
                     }
                     rekapData[namaSiswa].totalHari++;
 
@@ -293,13 +293,16 @@
                     if(String(rowData[14]).trim()) belajarPoint++;
                     if(belajarPoint === 2) rekapData[namaSiswa].belajar++;
 
+                    if (String(rowData[15]).trim()) rekapData[namaSiswa].bermasyarakat++;
+
+                    // Hitung poin makanan dari kolom yang benar (16, 17, 18)
                     let makanPoint = 0;
-                    if(String(rowData[15]).trim().toLowerCase() === 'ya') makanPoint++;
-                    if(String(rowData[16]).trim().toLowerCase() === 'ya') makanPoint++;
-                    if(String(rowData[17]).trim().toLowerCase() === 'ya') makanPoint++;
-                    if(makanPoint === 3) rekapData[namaSiswa].makanBergizi++;
-                    
-                    if (String(rowData[18]).trim()) rekapData[namaSiswa].bermasyarakat++;
+                    if(String(rowData[16]).trim()) makanPoint++; // Cek Karbo
+                    if(String(rowData[17]).trim()) makanPoint++; // Cek Sayur/Buah
+                    if(String(rowData[18]).trim()) makanPoint++; // Cek Susu/Protein
+                    if(String(rowData[19]).trim()) makanPoint++; // Lauk Pauk
+                    if(String(rowData[20]).trim()) makanPoint++; // Air Putih					
+                    if(makanPoint === 5) rekapData[namaSiswa].makanBergizi++;
                 }
 
                 for (const nama in rekapData) {
@@ -307,7 +310,7 @@
                     const row = document.createElement('tr');
                     row.insertCell().textContent = nama;
                     
-                    const kategoriKeys = ["beribadah", "tidurCepat", "bangunPagi", "olahraga", "belajar", "makanBergizi", "bermasyarakat"];
+                    const kategoriKeys = ["beribadah", "tidurCepat", "bangunPagi", "olahraga", "belajar", "bermasyarakat", "makanBergizi"];
                     const predicatesForPdf = {};
 
                     kategoriKeys.forEach(key => {
@@ -330,12 +333,12 @@
             }
             
             if (viewType === 'rekap') {
-                const rekapHeaders = ["Nama Siswa", "Tanggal Kegiatan", "Beribadah", "Tidur Cepat", "Bangun Pagi", "Olahraga", "Belajar", "Makan Bergizi", "Bermasyarakat"];
+                const rekapHeaders = ["Nama Siswa", "Tanggal Kegiatan", "Beribadah", "Tidur Cepat", "Bangun Pagi", "Olahraga", "Belajar", "Bermasyarakat", "Makan Bergizi"];
                 const headerRow = document.createElement('tr');
                 rekapHeaders.forEach(text => headerRow.appendChild(document.createElement('th')).textContent = text);
                 tableHead.appendChild(headerRow);
                 
-                const totalScores = { beribadah: 0, tidurCepat: 0, bangunPagi: 0, olahraga: 0, belajar: 0, makanBergizi: 0, bermasyarakat: 0 };
+                const totalScores = { beribadah: 0, tidurCepat: 0, bangunPagi: 0, olahraga: 0, belajar: 0, bermasyarakat: 0, makanBergizi: 0 };
                 let totalEntries = 0;
 
                 for (let i = 1; i < fullData.length; i++) {
@@ -365,27 +368,31 @@
                     const belajarScore = (belajarPoint === 2) ? 1 : 0;
                     totalScores.belajar += belajarScore;
 
-                    let makanPoint = 0;
-                    if(String(rowData[15]).trim().toLowerCase() === 'ya') makanPoint++;
-                    if(String(rowData[16]).trim().toLowerCase() === 'ya') makanPoint++;
-                    if(String(rowData[17]).trim().toLowerCase() === 'ya') makanPoint++;
-                    const makanScore = (makanPoint === 3) ? 1 : 0;
-                    totalScores.makanBergizi += makanScore;
-                    
-                    const masyarakatScore = String(rowData[18]).trim() ? 1 : 0;
+                    const masyarakatScore = String(rowData[15]).trim() ? 1 : 0;
                     totalScores.bermasyarakat += masyarakatScore;
+
+                    // Hitung poin makanan dari kolom yang benar (16, 17, 18)
+                    // dan perbaiki logika pengecekan (bukan 'ya', tapi cek apakah ada isinya)
+                    let makanPoint = 0;
+                    if(String(rowData[16]).trim()) makanPoint++; // Cek Karbo
+                    if(String(rowData[17]).trim()) makanPoint++; // Cek Sayur/Buah
+                    if(String(rowData[18]).trim()) makanPoint++; // Cek Susu/Protein
+                    if(String(rowData[19]).trim()) makanPoint++; // Lauk Pauk
+                    if(String(rowData[20]).trim()) makanPoint++; // Air Putih					
+                    const makanScore = (makanPoint === 5) ? 1 : 0;
+                    totalScores.makanBergizi += makanScore;
                     
                     let tanggalKegiatanFormatted = rowData[2];
                     try { tanggalKegiatanFormatted = new Date(rowData[2]).toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' }); } catch(e){}
 
-                    row.innerHTML = `<td>${rowData[1]}</td><td>${tanggalKegiatanFormatted}</td><td>${ibadahScore}</td><td>${tidurCepatScore}</td><td>${bangunPagiScore}</td><td>${olahragaScore}</td><td>${belajarScore}</td><td>${makanScore}</td><td>${masyarakatScore}</td>`;
+					row.innerHTML = `<td>${rowData[1]}</td><td>${tanggalKegiatanFormatted}</td><td>${ibadahScore}</td><td>${tidurCepatScore}</td><td>${bangunPagiScore}</td><td>${olahragaScore}</td><td>${belajarScore}</td><td>${masyarakatScore}</td><td>${makanScore}</td>`;
                     tableBody.appendChild(row);
                 }
 
                 if (totalEntries > 0) {
                     const footerRow = tableFoot.insertRow();
                     footerRow.innerHTML = `<td colspan="2">PERSENTASE KESUKSESAN</td>`;
-                    const kategoriKeys = ["beribadah", "tidurCepat", "bangunPagi", "olahraga", "belajar", "makanBergizi", "bermasyarakat"];
+                    const kategoriKeys = ["beribadah", "tidurCepat", "bangunPagi", "olahraga", "belajar", "bermasyarakat", "makanBergizi"];
                     kategoriKeys.forEach(key => {
                         const percentage = ((totalScores[key] / totalEntries) * 100).toFixed(1);
                         footerRow.insertCell().textContent = `${percentage}%`;
@@ -473,8 +480,8 @@
 
             const tableData = [
                 ['Bangun Pagi', predicateData['bangunPagi'] || 'N/A'], ['Beribadah', predicateData['beribadah'] || 'N/A'],
-                ['Berolahraga', predicateData['olahraga'] || 'N/A'], ['Makan Sehat dan Bergizi', predicateData['makanBergizi'] || 'N/A'],
-                ['Gemar Belajar', predicateData['belajar'] || 'N/A'], ['Bermasyarakat', predicateData['bermasyarakat'] || 'N/A'],
+                ['Berolahraga', predicateData['olahraga'] || 'N/A'], ['Bermasyarakat', predicateData['bermasyarakat'] || 'N/A'],
+                ['Gemar Belajar', predicateData['belajar'] || 'N/A'], ['Makan Sehat dan Bergizi', predicateData['makanBergizi'] || 'N/A'],
                 ['Tidur Cepat', predicateData['tidurCepat'] || 'N/A']
             ];
 
