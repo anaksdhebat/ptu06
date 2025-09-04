@@ -5,47 +5,259 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/1_4llqCMNoBDmwDHsI7RYsCM6rSK5wEjw">
     <title>Halaman Siswa</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 0; }
-        .header { background-color: #28a745; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { margin: 0; font-size: 24px; }
-        .header a { color: white; padding: 10px 15px; text-decoration: none; background-color: rgba(255,255,255,0.2); border-radius: 5px; transition: background-color 0.3s;}
-        .header a:hover { background-color: rgba(255,255,255,0.4); }
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        .welcome-card { background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px;}
-        .welcome-card h2 { margin-top: 0; color: #0056b3; }
-        .profile-container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px;}
-        .profile-container h3 { border-bottom: 2px solid #28a745; padding-bottom: 10px; margin-top: 0; }
-        .info-item { display: flex; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 16px; }
-        .info-label { font-weight: bold; color: #555; width: 150px; flex-shrink: 0; }
-        .activity-form-container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .activity-form-container h3 { border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-top: 0; color: #0056b3; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group.full-width { grid-column: 1 / -1; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input[type="text"], .form-group input[type="time"], .form-group input[type="date"], .form-group select, .form-group textarea {
-            width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;
-        }
-        .form-group textarea { resize: vertical; min-height: 80px; }
-        .checkbox-group label { margin-right: 15px; font-weight: normal;}
-        .submit-button { background-color: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.3s; }
-        .submit-button:hover { background-color: #0056b3; }
-        .submit-button:disabled { background-color: #a0c7e4; cursor: not-allowed; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); padding-top: 60px; }
-        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 400px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .modal-content h3 { margin-top: 0; }
-        .modal-content .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
-        .modal-content .close:hover, .modal-content .close:focus { color: black; text-decoration: none; cursor: pointer; }
-        #messageModalButtons { margin-top: 20px; }
-        #messageModalButtons button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; background-color: #007bff; color: white; }
-        
-        .ibadah-form-group {
-            display: none; /* Sembunyikan semua dropdown ibadah secara default */
-        }
+<style>
+    /* Menggunakan CSS Variables untuk warna agar mudah diubah */
+    :root {
+        --primary-color: #007bff;
+        --primary-hover: #0056b3;
+        --secondary-color: #28a745;
+        --background-color: #f4f7f6;
+        --card-bg-color: #ffffff;
+        --text-color: #333;
+        --border-color: #ccc;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+    }
 
-        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-    </style>
+    /* Definisi animasi untuk fade-in dan slide-up */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+    }
+
+    .header {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
+    .header h1 { margin: 0; font-size: 24px; }
+    .header a {
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .header a:hover {
+        background-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px); /* Efek terangkat saat hover */
+    }
+
+    .container {
+        padding: 20px;
+        max-width: 800px;
+        margin: auto;
+    }
+    
+    /* Animasi untuk semua kartu konten */
+    .welcome-card, .profile-container, .activity-form-container {
+        background-color: var(--card-bg-color);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px var(--shadow-color);
+        margin-bottom: 25px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: fadeInUp 0.6s ease-out forwards; /* Terapkan animasi saat muncul */
+    }
+    
+    /* Efek terangkat saat kursor di atas kartu */
+    .welcome-card:hover, .profile-container:hover, .activity-form-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .welcome-card h2 { margin-top: 0; color: var(--primary-hover); }
+
+    .profile-container h3, .activity-form-container h3 {
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 10px;
+        margin-top: 0;
+        color: var(--primary-hover);
+    }
+
+    .info-item { display: flex; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 16px; }
+    .info-label { font-weight: bold; color: #555; width: 150px; flex-shrink: 0; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group.full-width { grid-column: 1 / -1; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: bold; }
+
+    /* Desain ulang input form dengan transisi */
+    .form-group input[type="text"], .form-group input[type="time"], .form-group input[type="date"], .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        background-color: #fdfdfd;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    /* Efek "Glow" saat input aktif/fokus */
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    }
+    
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    /* === DESAIN ULANG CHECKBOX MENJADI LEBIH MENARIK === */
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px; /* Jarak antar item */
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        display: none; /* Sembunyikan checkbox asli */
+    }
+
+    .checkbox-group label {
+        padding: 8px 15px;
+        border: 2px solid var(--border-color);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Style untuk label saat checkbox di-checklist */
+    .checkbox-group input[type="checkbox"]:checked + label {
+        background-color: var(--secondary-color);
+        color: white;
+        border-color: var(--secondary-color);
+    }
+
+    /* Efek hover pada label checkbox */
+    .checkbox-group label:hover {
+        border-color: var(--secondary-color);
+        background-color: #e9f7eb;
+    }
+
+    /* === EFEK TOMBOL 3D dan INTERAKTIF === */
+    .submit-button {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .submit-button:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-3px); /* Tombol terangkat */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Efek saat tombol ditekan */
+    .submit-button:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .submit-button:disabled {
+        background-color: #a0c7e4;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    /* === ANIMASI MODAL/POPUP === */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s ease; /* Animasi fade-in untuk background gelap */
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 25px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+        animation: fadeInUp 0.4s ease-out; /* Animasi slide-up untuk konten modal */
+    }
+
+    .modal-content .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        transition: color 0.2s;
+    }
+
+    .modal-content .close:hover, .modal-content .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #messageModalButtons { margin-top: 20px; }
+    #messageModalButtons button {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        background-color: var(--primary-color);
+        color: white;
+        transition: background-color 0.3s;
+    }
+    #messageModalButtons button:hover {
+        background-color: var(--primary-hover);
+    }
+    
+    .ibadah-form-group {
+        display: none;
+    }
+
+    @media (max-width: 600px) {
+        .form-grid { grid-template-columns: 1fr; }
+        .welcome-card, .profile-container, .activity-form-container { padding: 20px; }
+    }
+</style>
 </head>
 <body>
     <div class="header">
@@ -76,45 +288,38 @@
                         <label>Laporan Ibadah Harian</label>
                         <div class="form-grid">
                             <div class="form-group ibadah-form-group" id="ibadah-container-1">
-                                <label for="ibadah1">Ibadah 1</label>
                                 <select id="ibadah1">
-                                    <option value="" disabled selected>Pilih Opsi</option>
+                                    <option value="" disabled selected>Ibadah 1</option>
                                 </select>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-2">
-                                <label for="ibadah2">Ibadah 2</label>
                                 <select id="ibadah2">
-                                    <option value="" disabled selected>Pilih Opsi</option>
+                                    <option value="" disabled selected>Ibadah 2</option>
                                 </select>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-3">
-                                <label for="ibadah3">Ibadah 3</label>
                                 <select id="ibadah3">
-                                    <option value="" disabled selected>Pilih Opsi</option>
+                                    <option value="" disabled selected>Ibadah 3</option>
                                 </select>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-4">
-                                <label for="ibadah4">Ibadah 4</label>
                                 <select id="ibadah4">
-                                    <option value="" disabled selected>Pilih Opsi</option>
+                                    <option value="" disabled selected>Ibadah 4</option>
                                 </select>
                             </div>
                              <div class="form-group ibadah-form-group" id="ibadah-container-5">
-                                <label for="ibadah5">Ibadah 5</label>
                                 <select id="ibadah5">
-                                    <option value="" disabled selected>Pilih Opsi</option>
+                                    <option value="" disabled selected>Ibadah 5</option>
                                 </select>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-6">
-                                <label for="ibadah6">Ibadah 6</label>
                                 <select id="ibadah6">
-                                    <option value="" disabled selected>Pilih Opsi</option>
+                                    <option value="" disabled selected>Ibadah 6</option>
                                 </select>
                             </div>
                             <div class="form-group ibadah-form-group" id="ibadah-container-7">
-                                <label for="ibadah7">Ibadah 7</label>
                                 <select id="ibadah7">
-                                    <option value="" disabled selected>Pilih Opsi</option>
+                                    <option value="" disabled selected>Ibadah 7</option>
                                 </select>
                             </div>
                         </div>
@@ -132,7 +337,19 @@
                         <label for="olahraga">Kegiatan Olahraga</label>
                         <input type="text" id="olahraga" placeholder="Contoh: Lari pagi 15 menit">
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
+                        <label for="bermasyarakat">Kegiatan Bermasyarakat</label>
+                        <textarea id="bermasyarakat" placeholder="Contoh: Membantu ibu membersihkan rumah"></textarea>
+                    </div>
+                     <div class="form-group full-width">
+                        <label for="belajarTempat">Tempat Belajar</label>
+                        <input type="text" id="belajarTempat" placeholder="Contoh: Di rumah, di perpustakaan">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="belajarApa">Materi yang Dipelajari</label>
+                        <textarea id="belajarApa" placeholder="Contoh: Membaca buku Sejarah Bab 3"></textarea>
+                    </div>
+                    <div class="form-group full-width">
                         <label>Makanan Sehat</label>
                         <div class="checkbox-group">
                             <input type="checkbox" id="makananKarbo" value="Karbo"><label for="makananKarbo">Karbo</label>
@@ -142,18 +359,8 @@
                             <input type="checkbox" id="makananAir" value="Air Putih"><label for="makananAir">Air Putih</label>							
                         </div>
                     </div>
-                    <div class="form-group full-width">
-                        <label for="belajarTempat">Tempat Belajar</label>
-                        <input type="text" id="belajarTempat" placeholder="Contoh: Di rumah, di perpustakaan">
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="belajarApa">Materi yang Dipelajari</label>
-                        <textarea id="belajarApa" placeholder="Contoh: Membaca buku Sejarah Bab 3"></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="bermasyarakat">Kegiatan Bermasyarakat</label>
-                        <textarea id="bermasyarakat" placeholder="Contoh: Membantu ibu membersihkan rumah"></textarea>
-                    </div>
+
+
                 </div>
                 <button type="submit" id="submitActivity" class="submit-button">Simpan Laporan</button>
             </form>
