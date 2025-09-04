@@ -374,16 +374,16 @@
             font-weight: 600;
             color: var(--dark-color);
         }
-        .form-group input, .form-group select, .form-group textarea { /* --- PERUBAHAN DIMULAI --- Menambahkan textarea */
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px;
             box-sizing: border-box;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             transition: all 0.2s;
-            font-family: var(--font-family); /* --- PERUBAHAN DIMULAI --- Menambahkan font-family */
+            font-family: var(--font-family);
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { /* --- PERUBAHAN DIMULAI --- Menambahkan textarea */
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
@@ -449,23 +449,85 @@
             border: none;
             border-top: 1px solid var(--border-color);
         }
-
-        /* --- PERUBAHAN DIMULAI --- */
-        .dropdown-options-grid {
+        
+        /* --- STYLING BARU UNTUK PENGATURAN KHUSUS --- */
+        .settings-columns-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
         }
-        .dropdown-options-grid .form-group textarea {
+        .settings-column {
+            display: flex;
+            flex-direction: column;
+        }
+        .settings-column h4 {
+             font-size: 1.1rem;
+             border-bottom: 2px solid var(--border-color);
+             padding-bottom: 10px;
+             margin-bottom: 15px !important; /* Override default h4 margin */
+        }
+        /* --- AKHIR STYLING BARU --- */
+
+        /* --- Styling untuk Accordion Dropdown Ibadah --- */
+        .accordion-container {
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        .accordion-item:not(:last-child) {
+            border-bottom: 1px solid var(--border-color);
+        }
+        .accordion-header {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            cursor: pointer;
+            padding: 18px 20px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        .accordion-header:hover, .accordion-header.active {
+            background-color: #e2e6ea;
+        }
+        .accordion-header .fas {
+            transition: transform 0.3s ease;
+            transform-origin: center;
+        }
+        .accordion-header.active .fas {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            padding: 0 20px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content .form-group {
+            padding: 20px 0;
+            border: none;
+            margin: 0;
+        }
+        .accordion-content textarea {
             min-height: 150px;
             resize: vertical;
         }
-        /* --- PERUBAHAN SELESAI --- */
-
 
         /* Responsive Design */
         @media (max-width: 992px) {
             .grid-container {
+                grid-template-columns: 1fr;
+            }
+            .settings-columns-container {
                 grid-template-columns: 1fr;
             }
         }
@@ -484,7 +546,6 @@
             .header { padding: 15px; }
             .container { padding: 15px; }
 
-            /* Make modal form 1 column on small screens */
             #formFields {
                 grid-template-columns: 1fr;
                 gap: 18px;
@@ -520,20 +581,17 @@
                 </div>
 
                 <div class="settings-card">
-                    <h3><i class="fas fa-database"></i> Backup & Restore Data</h3>
-                    <p>Simpan semua data sistem (Admin, Guru, Siswa, dan semua rekap kelas) ke dalam satu file. Anda dapat memulihkannya kapan saja.</p>
-                    
-                    <button class="btn-add" style="width:100%; background-color: var(--info-color);" onclick="backupData(this)"><i class="fas fa-download"></i> Backup Semua Data</button>
-
-                    <hr class="settings-separator">
-
-                     <h4 style="font-weight: 500; margin-bottom: 10px;"><i class="fas fa-upload" style="margin-right: 10px; font-size: 1rem; color: var(--text-color);"></i>Pulihkan Data</h4>
-                    <p style="color: var(--danger-color); font-weight: 500;">PERINGATAN: Memulihkan data akan MENGHAPUS dan MENGGANTI semua data yang ada saat ini dengan data dari file backup.</p>
-                    <div class="form-group">
-                        <label for="restoreFile">Pilih File Backup (.json):</label>
-                        <input type="file" id="restoreFile" accept=".json" style="padding: 5px;">
-                    </div>
-                    <button class="btn-add" style="width:100%; background-color: var(--danger-color); margin-top: auto;" onclick="restoreData(this)"><i class="fas fa-cloud-upload-alt"></i> Pulihkan Sekarang</button>
+                             <h4 style="font-weight: 500; margin: 0;"><i class="fas fa-clock" style="margin-right: 10px; font-size: 1rem; color: var(--text-color);"></i>Batas Waktu Aktivitas</h4>
+                            <p>Atur batas waktu maksimal untuk mendapatkan skor.</p>
+                            <div class="form-group">
+                                <label for="batasBangunPagi">Batas Waktu Bangun Pagi</label>
+                                <input type="time" id="batasBangunPagi">
+                            </div>
+                            <div class="form-group">
+                                <label for="batasTidurCepat">Batas Waktu Tidur Cepat</label>
+                                <input type="time" id="batasTidurCepat">
+                            </div>
+                            <button class="btn-add" style="width:100%; margin-top: auto;" onclick="saveWaktuSettings()"><i class="fas fa-save"></i> Simpan Pengaturan Waktu</button>
                 </div>
                 
                 <div class="settings-card">
@@ -562,62 +620,42 @@
                 </div>
 
                 <div class="settings-card">
-                    <h3><i class="fas fa-mosque"></i> Pengaturan Ibadah & Waktu</h3>
+                    <h3><i class="fas fa-mosque"></i> Point Ibadah</h3>
+                         <h4 style="font-weight: 500; margin: 0;"><i class="fas fa-pray" style="margin-right: 10px; font-size: 1rem; color: var(--text-color);"></i>Pengaturan Ibadah</h4>
+                            <p>Pilih ibadah yang akan dihitung dalam penilaian. Jumlah yang diceklis akan menjadi syarat minimum poin agar ibadah dianggap tuntas.</p>
+                            <div class="form-group ibadah-checkbox-grid" id="ibadahSettingsContainer"></div>
+                            <button class="btn-add" style="width:100%; margin-top: auto;" onclick="saveIbadahSettings()"><i class="fas fa-save"></i> Simpan Pengaturan Ibadah</button>
+                </div>
+
+                <div class="settings-card">
+							<h3><i class="fas fa-list-alt"></i> Pengaturan Opsi Dropdown Ibadah</h3>
+                         <h4 style="font-weight: 500; margin: 0;"><i class="fas fa-pray" style="margin-right: 10px; font-size: 1rem; color: var(--text-color);"></i>Pengaturan Ibadah</h4>
+							<p>Klik setiap item untuk membuka dan mengubah opsi. Masukkan setiap pilihan pada baris baru.</p>
+							<div class="accordion-container" id="ibadahAccordion">
+								<!-- Konten akordeon akan dibuat oleh JavaScript -->
+							</div>
+							<button class="btn-add" style="width:100%; margin-top: auto;" onclick="saveIbadahDropdowns(this)"><i class="fas fa-save"></i> Simpan Opsi Ibadah</button>
+                </div>
+
+
+                <div class="settings-card">
+                    <h3><i class="fas fa-database"></i> Backup & Restore Data</h3>
+                    <p>Simpan semua data sistem (Admin, Guru, Siswa, dan semua rekap kelas) ke dalam satu file. Anda dapat memulihkannya kapan saja.</p>
                     
-                    <p>Pilih ibadah yang akan dihitung dalam penilaian. Jumlah yang diceklis akan menjadi syarat minimum poin agar ibadah dianggap tuntas.</p>
-                    <div class="form-group ibadah-checkbox-grid" id="ibadahSettingsContainer"></div>
-                    <button class="btn-add" style="width:100%;" onclick="saveIbadahSettings()"><i class="fas fa-save"></i> Simpan Pengaturan Ibadah</button>
+                    <button class="btn-add" style="width:100%; background-color: var(--info-color);" onclick="backupData(this)"><i class="fas fa-download"></i> Backup Semua Data</button>
 
                     <hr class="settings-separator">
 
-                    <h4 style="font-weight: 500; margin-bottom: 10px;"><i class="fas fa-clock" style="margin-right: 10px; font-size: 1rem; color: var(--text-color);"></i>Batas Waktu Aktivitas</h4>
-                    <p>Atur batas waktu maksimal untuk mendapatkan skor.</p>
+                     <h4 style="font-weight: 500; margin-bottom: 10px;"><i class="fas fa-upload" style="margin-right: 10px; font-size: 1rem; color: var(--text-color);"></i>Pulihkan Data</h4>
+                    <p style="color: var(--danger-color); font-weight: 500;">PERINGATAN: Memulihkan data akan MENGHAPUS dan MENGGANTI semua data yang ada saat ini dengan data dari file backup.</p>
                     <div class="form-group">
-                        <label for="batasBangunPagi">Batas Waktu Bangun Pagi</label>
-                        <input type="time" id="batasBangunPagi">
+                        <label for="restoreFile">Pilih File Backup (.json):</label>
+                        <input type="file" id="restoreFile" accept=".json" style="padding: 5px;">
                     </div>
-                    <div class="form-group">
-                        <label for="batasTidurCepat">Batas Waktu Tidur Cepat</label>
-                        <input type="time" id="batasTidurCepat">
-                    </div>
-                    <button class="btn-add" style="width:100%;" onclick="saveWaktuSettings()"><i class="fas fa-save"></i> Simpan Pengaturan Waktu</button>
+                    <button class="btn-add" style="width:100%; background-color: var(--danger-color); margin-top: auto;" onclick="restoreData(this)"><i class="fas fa-cloud-upload-alt"></i> Pulihkan Sekarang</button>
                 </div>
 
-                <div class="settings-card" style="grid-column: 1 / -1;">
-                    <h3><i class="fas fa-list-alt"></i> Pengaturan Opsi Dropdown Ibadah</h3>
-                    <p>Masukkan setiap pilihan pada baris baru. Pilihan ini akan muncul di formulir harian siswa.</p>
-                    <div class="dropdown-options-grid">
-                        <div class="form-group">
-                            <label for="opsiIbadah1">Opsi untuk Ibadah 1</label>
-                            <textarea id="opsiIbadah1" placeholder="Subuh&#10;Berdoa&#10;Tidak"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="opsiIbadah2">Opsi untuk Ibadah 2</label>
-                            <textarea id="opsiIbadah2" placeholder="Dzuhur&#10;Berdoa&#10;Tidak"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="opsiIbadah3">Opsi untuk Ibadah 3</label>
-                            <textarea id="opsiIbadah3" placeholder="Ashar&#10;Berdoa&#10;Tidak"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="opsiIbadah4">Opsi untuk Ibadah 4</label>
-                            <textarea id="opsiIbadah4" placeholder="Maghrib&#10;Berdoa&#10;Tidak"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="opsiIbadah5">Opsi untuk Ibadah 5</label>
-                            <textarea id="opsiIbadah5" placeholder="Isya&#10;Berdoa&#10;Tidak"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="opsiIbadah6">Opsi untuk Ibadah 6</label>
-                            <textarea id="opsiIbadah6" placeholder="Tadarus&#10;Berdoa&#10;Tidak"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="opsiIbadah7">Opsi untuk Ibadah 7</label>
-                            <textarea id="opsiIbadah7" placeholder="Tahajud&#10;Berdoa&#10;Tidak"></textarea>
-                        </div>
-                    </div>
-                    <button class="btn-add" style="width:100%; margin-top: auto;" onclick="saveIbadahDropdowns(this)"><i class="fas fa-save"></i> Simpan Opsi Ibadah</button>
-                </div>
+
                 </div>
         </div>
 
@@ -762,8 +800,57 @@
             }
             loadGlobalSettings();
             loadAllUserData();
-            loadIbadahDropdowns(); // --- PERUBAHAN DIMULAI --- Memuat opsi dropdown
+            setupIbadahAccordion();
+            loadIbadahDropdowns();
         };
+        
+        function setupIbadahAccordion() {
+            const accordionContainer = document.getElementById('ibadahAccordion');
+            if (!accordionContainer) return; 
+            accordionContainer.innerHTML = ''; 
+
+            const placeholders = [
+                "Subuh\nBerdoa\nTidak", "Dzuhur\nBerdoa\nTidak", "Ashar\nBerdoa\nTidak",
+                "Maghrib\nBerdoa\nTidak", "Isya\nBerdoa\nTidak", "Tadarus\nBerdoa\nTidak",
+                "Tahajud\nBerdoa\nTidak"
+            ];
+
+            for (let i = 1; i <= 7; i++) {
+                const item = document.createElement('div');
+                item.className = 'accordion-item';
+                item.innerHTML = `
+                    <button type="button" class="accordion-header">
+                        <span>Opsi untuk Ibadah ${i}</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="form-group">
+                            <textarea id="opsiIbadah${i}" placeholder="${placeholders[i-1]}"></textarea>
+                        </div>
+                    </div>
+                `;
+                accordionContainer.appendChild(item);
+            }
+
+            accordionContainer.addEventListener('click', function(e) {
+                const header = e.target.closest('.accordion-header');
+                if (!header) return;
+
+                const allHeaders = accordionContainer.querySelectorAll('.accordion-header');
+                const content = header.nextElementSibling;
+                const isActive = header.classList.contains('active');
+
+                allHeaders.forEach(h => {
+                    h.classList.remove('active');
+                    h.nextElementSibling.style.maxHeight = null;
+                });
+
+                if (!isActive) {
+                    header.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        }
 
         // ========================================================================
         // FUNGSI BARU: BACKUP DAN RESTORE
@@ -869,10 +956,9 @@
 
             reader.readAsText(file);
         }
-
-        // --- PERUBAHAN DIMULAI ---
+        
         // ========================================================================
-        // FUNGSI BARU: MENGELOLA DROPDOWN IBADAH
+        // FUNGSI MENGELOLA DROPDOWN IBADAH
         // ========================================================================
         function loadIbadahDropdowns() {
             fetch(`${scriptURL}?action=getIbadahDropdowns`)
@@ -881,8 +967,7 @@
                     if (res.status === 'success' && res.data.options) {
                         for (let i = 1; i <= 7; i++) {
                             const textarea = document.getElementById(`opsiIbadah${i}`);
-                            // PERBAIKAN: Tambahkan .options untuk mengakses object yang benar
-                            const options = res.data.options[`ibadah${i}`] || []; // <-- DIUBAH
+                            const options = res.data.options[`ibadah${i}`] || [];
                             textarea.value = options.join('\n');
                         }
                     } else {
@@ -900,7 +985,6 @@
             let allOptions = [];
             let maxRows = 0;
 
-            // Kumpulkan semua opsi dan cari jumlah baris maksimum
             for (let i = 1; i <= 7; i++) {
                 const textarea = document.getElementById(`opsiIbadah${i}`);
                 const options = textarea.value.split('\n').map(opt => opt.trim()).filter(Boolean);
@@ -910,12 +994,10 @@
                 }
             }
 
-            // Buat 2D array (matriks) yang ukurannya sesuai
             const dataForSheet = [];
             for (let r = 0; r < maxRows; r++) {
                 const row = [];
                 for (let c = 0; c < 7; c++) {
-                    // Isi dengan opsi jika ada, atau string kosong jika tidak
                     row.push(allOptions[c][r] || '');
                 }
                 dataForSheet.push(row);
@@ -941,10 +1023,9 @@
                     button.innerHTML = originalText;
                 });
         }
-        // --- PERUBAHAN SELESAI ---
-
+        
         // ========================================================================
-        // FUNGSI LAMA (TIDAK DIUBAH)
+        // FUNGSI LAINNYA
         // ========================================================================
         
         function downloadTableAsPDF(tableId, title) {
@@ -1115,13 +1196,12 @@
                         throw new Error("File Excel tidak berisi data atau formatnya salah.");
                     }
 
-                    // Pastikan setiap baris memiliki 5 kolom sesuai format
                     const validatedData = filteredData.map(row => {
                         let newRow = [...row];
                         while(newRow.length < 5) {
-                            newRow.push(''); // Tambahkan sel kosong jika kurang
+                            newRow.push('');
                         }
-                        return newRow.slice(0, 5); // Ambil 5 kolom pertama saja
+                        return newRow.slice(0, 5);
                     });
 
 
@@ -1741,3 +1821,4 @@
 </body>
 
 </html>
+
